@@ -25,6 +25,7 @@ pub fn create_router(state: AppState) -> Router {
         .route("/stats", get(handlers::stats))
         // API routes
         .route("/health", get(handlers::health))
+        .route("/config", get(handlers::config))
         .route("/autocomplete", get(handlers::autocomplete))
         // MCP route
         .route("/mcp", get(handlers::mcp_post))

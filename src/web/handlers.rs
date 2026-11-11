@@ -532,6 +532,29 @@ pub async fn health() -> impl IntoResponse {
     }))
 }
 
+/// SearXNG-compatible instance configuration.
+/// Clients like Cherry Studio call this to discover enabled engines:
+/// `{ "engines": [{ "name", "enabled", "categories" }] }`
+pub async fn config(State(state): State<AppState>) -> impl IntoResponse {
+    let mut names = state.registry.names();
+    names.sort();
+    let engines: Vec<serde_json::Value> = names
+        .iter()
+        .filter_map(|name| {
+            state.registry.get(name).map(|engine| {
+                let categories: Vec<String> =
+                    engine.categories().iter().map(|s| s.to_string()).collect();
+                serde_json::json!({
+                    "name": name,
+                    "enabled": true,
+                    "categories": categories,
+                })
+            })
+        })
+        .collect();
+    Json(serde_json::json!({ "engines": engines }))
+}
+
 /// Autocomplete handler
 #[derive(Debug, Deserialize)]
 pub struct AutocompleteParams {
