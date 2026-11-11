@@ -65,7 +65,8 @@ impl Base {
                         .trim()
                         .to_string();
                     if content.len() > 300 {
-                        content = format!("{}...", &content[..300]);
+                        let end = content.floor_char_boundary(300);
+                        content = format!("{}...", &content[..end]);
                     }
                 }
             }

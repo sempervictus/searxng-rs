@@ -138,9 +138,10 @@ impl Engine for Wikipedia {
                     Result::new(url.to_string(), title.to_string(), self.name().to_string());
 
                 if let Some(content) = extract {
-                    // Truncate long extracts
+                    // Truncate long extracts (char-boundary safe)
                     let truncated = if content.len() > 500 {
-                        format!("{}...", &content[..500])
+                        let end = content.floor_char_boundary(500);
+                        format!("{}...", &content[..end])
                     } else {
                         content
                     };

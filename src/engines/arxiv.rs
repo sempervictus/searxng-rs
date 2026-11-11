@@ -105,9 +105,10 @@ impl ArXiv {
             result = result.with_position(position);
 
             if let Some(abstract_text) = abstract_text {
-                // Truncate abstract if too long
+                // Truncate abstract if too long (char-boundary safe)
                 let truncated = if abstract_text.len() > 300 {
-                    format!("{}...", &abstract_text[..300])
+                    let end = abstract_text.floor_char_boundary(300);
+                    format!("{}...", &abstract_text[..end])
                 } else {
                     abstract_text
                 };
